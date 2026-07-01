@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 type FormState = {
   nombre: string;
@@ -45,6 +46,8 @@ export default function RegistrationForm() {
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -58,7 +61,7 @@ export default function RegistrationForm() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newErrors = validate(form);
     if (Object.keys(newErrors).length) {
@@ -69,12 +72,30 @@ export default function RegistrationForm() {
       if (first) document.getElementById("f-" + first)?.focus();
       return;
     }
+
+    setSubmitError("");
+    setSubmitting(true);
+    const { error } = await supabase.from("form_submissions").insert({
+      nombre: form.nombre.trim(),
+      email: form.email.trim(),
+      perfil: form.perfil,
+      nivel: form.nivel,
+      equipo: form.equipo,
+    });
+    setSubmitting(false);
+
+    if (error) {
+      setSubmitError("No hemos podido enviar tu inscripción. Inténtalo de nuevo.");
+      return;
+    }
+
     setSubmitted(true);
   };
 
   const resetForm = () => {
     setForm(initialState);
     setErrors({});
+    setSubmitError("");
     setSubmitted(false);
   };
 
@@ -214,11 +235,14 @@ export default function RegistrationForm() {
         {errors.equipo && <span className={errorClass}>{errors.equipo}</span>}
       </div>
 
+      {submitError && <span className={errorClass}>{submitError}</span>}
+
       <button
         type="submit"
-        className="mt-2 rounded-full bg-[var(--ebis-teal)] px-[30px] py-4 font-[var(--font-display)] text-[1.0625rem] font-bold tracking-[0.01em] text-white shadow-[var(--shadow-md)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-[var(--ebis-teal-600)]"
+        disabled={submitting}
+        className="mt-2 rounded-full bg-[var(--ebis-teal)] px-[30px] py-4 font-[var(--font-display)] text-[1.0625rem] font-bold tracking-[0.01em] text-white shadow-[var(--shadow-md)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-[var(--ebis-teal-600)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
       >
-        Quiero participar
+        {submitting ? "Enviando…" : "Quiero participar"}
       </button>
       <p className="m-0 text-center text-[0.8125rem] text-[var(--text-muted)]">
         Al enviar aceptas que te contactemos sobre HackIA Madrid. Sin spam.
