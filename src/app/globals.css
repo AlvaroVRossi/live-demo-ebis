@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  --ebis-navy: #01415b;
+  --ebis-navy-deep: #012c3d;
+  --ebis-teal: #3298b3;
+  --ebis-teal-600: #29849c;
+  --ebis-mint: #6acbb8;
+  --ebis-mint-100: #e5f6f2;
+  --ebis-paper: #f8fafb;
+  --ebis-ink-40: rgba(255, 255, 255, 0.4);
+
+  --text-body: #33474f;
+  --text-muted: #6b8089;
+  --text-accent: var(--ebis-teal);
+  --text-on-dark-muted: rgba(255, 255, 255, 0.78);
+
+  --border-subtle: #e4ebed;
+  --border-strong: #d3dfe2;
+
+  --status-danger: #d84c4c;
+
+  --shadow-sm: 0 4px 14px rgba(1, 65, 91, 0.14);
+  --shadow-md: 0 10px 28px rgba(1, 65, 91, 0.18);
+  --shadow-card: 0 8px 30px rgba(1, 65, 91, 0.08);
+  --shadow-lg: 0 24px 60px rgba(1, 65, 91, 0.22);
+
+  --grad-navy: linear-gradient(160deg, var(--ebis-navy) 0%, var(--ebis-navy-deep) 100%);
+  --grad-teal: linear-gradient(120deg, var(--ebis-teal) 0%, var(--ebis-mint) 100%);
+}
+
+@theme inline {
+  --color-background: var(--ebis-paper);
+  --color-foreground: var(--text-body);
+  --font-display: var(--font-montserrat);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--ebis-paper);
+  color: var(--text-body);
+  font-family: var(--font-body), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+input::placeholder {
+  color: #9db2bc;
+}
+
+select:invalid {
+  color: #9db2bc;
+}
+
+@keyframes hk-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hk-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hk-reveal.hk-visible {
+  opacity: 1;
+  transform: none;
+}
